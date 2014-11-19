@@ -1,0 +1,180 @@
+//////////////////////////// 80 columns wide //////////////////////////////////
+Gustavo Zach Vargas
+903 015 5247
+cs login: gustavo
+
+
+1. Suppose arr is an array of ints initialized to contain 
+[ 7, 5, 3, 1, 2, 4, 6, 8 ]
+What are the contents of arr after the following code executes? 
+Explain your results.
+for (int i = 0; i < 8; i++)
+    *(arr + i) = *arr + i;
+
+after the code executes, arr will contain: [7 8 9 10 11 12 13 14 ]
+
+This is because as the for loop iterates through the array and implements the
+line of code in the loop for each index of arr. arr is pointing at the first 
+element in the array. The value at (arr + i) is dereferenced by the * operator.
+The command then set the value of the dereferenced (arr +i) index to the value
+in the first index (still pointed to by arr and dereferenced by the *) plus
+the iteration number i. The result is the iteration number of the loop being 
+added to the first element then placed in that iteration numbered index. This
+means that first index 0 (the value 7) is now equal to 7 plus 0. The number 
+at index 1 (the value of 5) is now equal to the value at index 0 (7) plus i (1),
+thus index 1 is now equal to 8. This process repeats through the entire array.
+
+
+
+2. What will the contents of the array a be after the following 
+code fragment is executed? Explain your results.
+
+int *p, a[5] = {1, 2, 3, 4, 5};
+p = a;
+p++;
+p[2] = 0;
+
+The array a will contain [1 2 3 0 5 ] after the code is run.
+The uninitialized pointer p is set equal to the value of a. This means that it is
+set to the first element of a (array variables point to the first element in 
+the array). P is the incremented meaning that it is see to the second element 
+of the array. When the second element of p is accessed using the brackets [], 
+the array is considered to be starting at where the pointer p is located 
+(second element of a) and then the second element of this shortened array is accessed (4).
+Then the element for a accessed is set to 0.
+
+
+
+3. Suppose that StockItem is a structure that has already been defined and that DataItem is the following structure:
+struct DataItem {
+    int id;
+    StockItem *itemPtr;
+};
+
+
+Write a function named switchIt that takes two parameters of type DataItem and swaps the itemPtr fields of the two parameters.
+ Note: your function should only swap pointers (i.e., you are swapping StockItem *s not StockItems).
+
+void switchIt(DataItem &d1, DataItem &d2){
+	StockItem *tmp = d1.itemPtr;
+	d1.itemPtr = d2.itemPtr;
+	d2.itemPtr = tmp;
+	tmp = NULL;
+}
+
+
+
+4. Given the following structure:
+struct Color {
+    int red;
+    int blue;
+    int green;
+};
+Complete the following setColor function. This function takes an array of pointers to Colors and initializes the array at the given index to be a new Color with the given red, blue, and green values.
+
+
+void setColor(Color **arr, int index, int red, int blue, int green) {
+	arr[index] = new Color;
+	arr[index]->red = red;
+	arr[index]->blue = blue;
+	arr[index]->green = green;
+}
+
+5. Suppose we have a singly linked list (i.e., chain of linked nodes) that holds characters defined as follows:
+struct Node {     // represents an individual node in the chain
+    char value;
+    Node *next;   // pointer to the next node in the chain
+};
+Node *head; // pointer to the first node in the chain
+and that head is pointing to a chain of nodes containing 'a', 'b', 'c', 'd' (in that order). Write a code fragment that moves the node containing 'c' to the beginning of the chain. That is, initially we have
+
+     +---+    +---+---+    +---+---+    +---+---+    +---+---+
+head | --+--> |'a'| --+--> |'b'| --+--> |'c'| --+--> |'d'| \ |
+     +---+    +---+---+    +---+---+    +---+---+    +---+---+
+and after the code fragment executes, we have
+
+     +---+    +---+---+    +---+---+    +---+---+    +---+---+
+head | --+--> |'c'| --+--> |'a'| --+--> |'b'| --+--> |'d'| \ |
+     +---+    +---+---+    +---+---+    +---+---+    +---+---+
+Make sure your code moves the node itself (and not just the value within the node).
+
+	//tmp holds the address of node c
+	tmp = head->next->next;
+
+	//set next of node b to node d
+	head->next->next = tmp->next;
+
+	//reset next value of node c (stored in tmp) to point at a
+	tmp->next = head;
+
+	//set the head to start at node c, stored in tmp
+	head = tmp;
+
+
+6. Given the following code:
+void scramble(int *x, int &y, int * &z) {
+    *x = y;
+    x = z;
+    *x = 2;
+    z = new int(4);
+    y = 6;
+}
+
+void testIt() { 
+    int a = 1;
+    int *b = new int(3);
+    int *c = new int(5);
+    int **d = &b;
+    scramble(&a, *c, *d);
+    cout << a << " " << *b << " " << *c << " " << **d << endl;
+}
+What is printed when the testIt() function is executed? Explain your results. Hint: use a memory diagram to understand the code's execution (though it isn't required for your submission).
+
+ int a = 1;
+This creates an int variable on the call stack with the value 1.
+
+ int *b = new int(3);
+Creates a new int in the heap with the value 3. A pointer var (b) in the stack points to this new int.
+
+ int *c = new int(5);
+Creates a new int in the heap with the value 5. A pointer var (c) in the stack points to this new int.
+
+ int **d = &b;
+Creates a pointer in the stack that points to the address of pointer b.
+
+ scramble(&a, *c, *d);
+Calls the function scramble. Passes the address of a (stored as x in function),
+ the de-referenced pointer c (value of 5 in heap) (stored as y in the function),
+ and the dereferenced pointer to a pointer d (the pointer b) (stored as z in the function).
+
+void scramble(int *x, int &y, int * &z) {
+In the function scramble, x is a pointer to the int a in the stack. 
+y is a reference to int in the heap pointed to by c (currently value of 5)
+and z is a reference to the address of the pointer b.
+
+   *x = y;
+the address x was pointing at (int a) is changed to the value of y(pointer to int 5). That is to say, the int in variable a is changed to 5
+
+    x = z;
+the pointer x is now pointing at the pointer b.
+
+    *x = 2;
+the value of b is changed from a pointer to the int 3 in the heap to the value of 2. This creates a memory leak as nothing is pointing to the int 3 in the heap and it was not deleted.
+
+    z = new int(4);
+z was pointing to the variable b (just altered in previous line to an int of 2), now z is a pointer to a new int in the heap with value 4.
+
+    y = 6;
+the int in the heap pointed to by c and y is changed to the value 6
+
+    cout << a << " " << *b << " " << *c << " " << **d << endl;
+a is the value 5
+the de referenced value of b is 4
+the de referenced value of c is 6
+and the double de referenced value of d is what the pointer b was pointing at (i.e. int of value 4 in heap)
+
+the resulting output is: 5 4 6 4
+
+
+
+

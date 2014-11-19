@@ -1,0 +1,130 @@
+/*******************************************************************************
+Author:        Gustavo Zach Vargas
+CS Login:      gustavo
+
+Pair Partner:  <name of your pair programming partner (if applicable)>
+CS Login:      <your partner's login name>
+
+Credits:       <name of anyone (other than your pair programming partner) who
+                helped you write your program>
+
+Course:         CS 368, Fall 2013
+Assignment:     Programming Assignment 2
+*******************************************************************************/
+
+#include <iostream>
+#include "Student.h"
+#include "SortedList.h"
+
+/*
+ * SortedList implemented class
+ *
+ * A SortedList is an ordered collection of Students.  The Students are ordered
+ * from lowest numbered student ID to highest numbered student ID.
+ */
+
+// Constructs an empty list.
+SortedList::SortedList(){
+	head = NULL;
+}
+
+// If a student with the same ID is not already in the list, inserts
+// the given student into the list in the appropriate place and returns
+// true.  If there is already a student in the list with the same ID
+// then the list is not changed and false is returned.
+bool SortedList::insert(Student *s){
+
+	bool inserted = false;
+
+	//if the list is empty, place the student at the top of the list
+	if(head == NULL){
+		head = new Listnode();
+		head->student = s;
+		head->next = NULL;
+		inserted = true;
+	}
+
+	Listnode* curr = head; //current node in execution
+	Listnode* prev = NULL; //node previous to curr in iteration through list
+
+	//find where the student fits in the list
+	while(curr->next != NULL){
+
+
+		//add student where its ID fits
+		if(curr->student->getID() > s->getID()){
+			//new list node in which to add student
+			Listnode *Stadd = new Listnode();
+			Stadd->student = s;
+			Stadd->next = curr;
+			prev->next->student = s;
+			inserted = true;
+		}
+
+		//increment iterating pointers
+		prev = curr;
+		curr->next = curr->next->next;
+	}
+
+	return inserted;
+}
+
+// Searches the list for a student with the given student ID.  If the
+// student is found, it is returned; if it is not found, NULL is returned.
+Student* SortedList::find(int studentID){
+
+	Listnode* curr = head;
+
+	while(curr->next != NULL){
+		if(curr->student->getID() == studentID){
+			return curr->student;
+		}
+
+		curr->next = curr->next->next;
+	}
+
+	return NULL;
+
+}
+
+// Searches the list for a student with the given student ID.  If the
+// student is found, the student is removed from the list and returned;
+// if no student is found with the given ID, NULL is returned.
+// Note that the Student is NOT deleted - it is returned - however,
+// the removed list node should be deleted.
+Student* SortedList::remove(int studentID){
+
+	Listnode* curr = head;
+	Listnode* prev = NULL;
+	Listnode* temp = NULL;
+
+	while(curr->next != NULL){
+		if(curr->student->getID() == studentID){
+
+			temp = prev->next;
+
+			prev->next = curr->next;
+
+			delete temp;
+			temp = NULL;
+
+			return curr->student;
+		}
+	}
+
+	return NULL;
+}
+
+// Prints out the list of students to standard output.  The students are
+// printed in order of student ID (from smallest to largest), one per line
+void SortedList::print() const{
+
+	Listnode* tmp = head;
+
+	while(tmp->next != NULL){
+		tmp->student->print();
+		tmp = tmp->next;
+	}
+
+}
+
